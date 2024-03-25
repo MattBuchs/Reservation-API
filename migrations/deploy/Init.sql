@@ -18,6 +18,12 @@ CREATE TABLE "room" (
     "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" text NOT NULL,
     "icon" text,
+    "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz
+);
+
+CREATE TABLE "price" (
+    "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "price" int NOT NULL,
     "capacity" int NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT now(),
@@ -73,6 +79,13 @@ CREATE TABLE "hourly_has_room" (
 
 CREATE TABLE "blockedSlot_has_room" (
     "blockedSlot_id" int NOT NULL REFERENCES "blockedSlot"("id"),
+    "room_id" int NOT NULL REFERENCES "room"("id"),
+    "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz
+);
+
+CREATE TABLE "price_has_room" (
+    "price_id" int NOT NULL REFERENCES "price"("id"),
     "room_id" int NOT NULL REFERENCES "room"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz

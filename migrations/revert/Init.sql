@@ -10,6 +10,8 @@ DROP TABLE
     "blockedSlot",
     "room_has_user",
     "hourly_has_room",
-    "blockedSlot_has_room";
+    "blockedSlot_has_room",
+    "price",
+    "price_has_room";
 
 COMMIT;

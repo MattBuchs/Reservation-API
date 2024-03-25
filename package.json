@@ -7,7 +7,7 @@
     "scripts": {
         "start": "node index.js",
         "dev": "npx nodemon",
-        "dbDeploy": "sqitch revert -y;sqitch deploy; node data/seeding.js;"
+        "dbDeploy": "sqitch revert -y;sqitch deploy; psql -d reservation -f ./data/seeding.sql;"
     },
     "author": "Matt Buchs",
     "license": "ISC",
