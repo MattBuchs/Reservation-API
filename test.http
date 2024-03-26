@@ -18,3 +18,6 @@ Content-Type: application/json
     "password": "1234",
     "confirmPassword": "1234"
 }
+
+### get rooms
+GET http://localhost:1234/rooms
