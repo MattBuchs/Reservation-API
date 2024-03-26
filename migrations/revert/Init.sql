@@ -5,13 +5,12 @@ BEGIN;
 DROP TABLE 
     "user",
     "room",
-    "reservation",
-    "hourly",
-    "blockedSlot",
-    "room_has_user",
-    "hourly_has_room",
-    "blockedSlot_has_room",
     "price",
+    "hourly",
+    "session",
+    "reservation",
+    "room_has_user",
+    "room_has_session",
     "price_has_room";
 
 COMMIT;

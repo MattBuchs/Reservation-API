@@ -30,6 +30,22 @@ CREATE TABLE "price" (
     "updated_at" timestamptz
 );
 
+CREATE TABLE "hourly" (
+    "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "available_time" text NOT NULL,
+    "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz
+);
+
+CREATE TABLE "session" (
+    "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "day" timestamptz NOT NULL,
+    "is_blocked" boolean NOT NULL DEFAULT false,
+    "hourly_id" int NOT NULL REFERENCES "hourly"("id"),
+    "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz
+);
+
 CREATE TABLE "reservation" (
     "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "firstname" text NOT NULL,
@@ -43,21 +59,7 @@ CREATE TABLE "reservation" (
     "number_person" int NOT NULL,
     "discovered" text,
     "room_id" int NOT NULL REFERENCES "room"("id"),
-    "created_at" timestamptz NOT NULL DEFAULT now(),
-    "updated_at" timestamptz
-);
-
-CREATE TABLE "hourly" (
-    "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "available_time" text NOT NULL,
-    "created_at" timestamptz NOT NULL DEFAULT now(),
-    "updated_at" timestamptz
-);
-
-CREATE TABLE "blockedSlot" (
-    "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "date" timestamptz NOT NULL,
-    "hour" text NOT NULL,
+    "session_id" int NOT NULL REFERENCES "session"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz
 );
@@ -70,16 +72,9 @@ CREATE TABLE "room_has_user" (
     "updated_at" timestamptz
 );
 
-CREATE TABLE "hourly_has_room" (
-    "hourly_id" int NOT NULL REFERENCES "hourly"("id"),
+CREATE TABLE "room_has_session" (
     "room_id" int NOT NULL REFERENCES "room"("id"),
-    "created_at" timestamptz NOT NULL DEFAULT now(),
-    "updated_at" timestamptz
-);
-
-CREATE TABLE "blockedSlot_has_room" (
-    "blockedSlot_id" int NOT NULL REFERENCES "blockedSlot"("id"),
-    "room_id" int NOT NULL REFERENCES "room"("id"),
+    "session_id" int NOT NULL REFERENCES "session"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz
 );

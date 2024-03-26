@@ -11,8 +11,9 @@ export default {
                     cause: { code: 404 },
                 });
 
-            return res.json({ rooms });
+            return res.status(200).json({ rooms });
         } catch (err) {
+            console.log(err);
             if (err.cause) {
                 const { code } = err.cause;
                 return res.status(code).json({ error: err.message });
