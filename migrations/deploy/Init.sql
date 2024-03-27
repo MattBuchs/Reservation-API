@@ -32,7 +32,7 @@ CREATE TABLE "price" (
 
 CREATE TABLE "hourly" (
     "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "available_time" text NOT NULL,
+    "hour" text NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz
 );

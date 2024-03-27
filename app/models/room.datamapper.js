@@ -3,34 +3,23 @@ import CoreDatamapper from "./core.datamapper.js";
 export default class RoomDatamapper extends CoreDatamapper {
     tableName = "room";
 
-    async getRoomsWithDetails() {
+    async getRoomsForDay(date) {
         const result = await this.client.query(
             `
-            SELECT 
-            "room"."id",
-            "room"."name", 
-            "room"."icon",
-            JSON_AGG(
-                JSON_BUILD_OBJECT(
-                    'price', "price"."price",
-                    'capacity', "price"."capacity"
-                )
-            ) AS "prices_and_capacities",
-            ARRAY_AGG(DISTINCT "hourly"."id") AS "hourly_ids", 
-            ARRAY_AGG(DISTINCT "hourly"."available_time") AS "available_times", 
-            ARRAY_AGG(DISTINCT "blockedSlot"."id") AS "blockedSlot_ids", 
-            ARRAY_AGG(DISTINCT "blockedSlot"."date") AS "blockedSlot_dates", 
-            ARRAY_AGG(DISTINCT "blockedSlot"."hour") AS "blockedSlot_hours"
+            SELECT "room"."id" AS room_id, "room"."name", "room"."icon",
+            TO_CHAR("session"."day", 'YYYY-MM-DD') AS day, "session"."is_blocked",
+            "hourly"."hour"
             FROM "room"
-            LEFT JOIN "price_has_room" ON "price_has_room"."room_id" = "room"."id"
-            LEFT JOIN "price" ON "price_has_room"."price_id" = "price"."id"
-            LEFT JOIN "hourly_has_room" ON "hourly_has_room"."room_id" = "room"."id"
-            LEFT JOIN "hourly" ON "hourly_has_room"."hourly_id" = "hourly"."id"
-            LEFT JOIN "blockedSlot_has_room" ON "blockedSlot_has_room"."room_id" = "room"."id"
-            LEFT JOIN "blockedSlot" ON "blockedSlot_has_room"."blockedSlot_id" = "blockedSlot"."id"
-            GROUP BY "room"."id", "room"."name", "room"."icon"
-            ORDER BY "room"."id";
-            `
+            LEFT JOIN "room_has_session" ON "room_has_session"."room_id" = "room"."id"
+            LEFT JOIN "session" ON "room_has_session"."session_id" = "session"."id"
+            LEFT JOIN "hourly" ON "session"."hourly_id" = "hourly"."id"
+            WHERE "session"."day" = $1
+            GROUP BY 
+                "room"."id", "room"."name", 
+                "session"."day", "session"."is_blocked", 
+                "hourly"."hour";
+            `,
+            [date]
         );
 
         return result.rows;

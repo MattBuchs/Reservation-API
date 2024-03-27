@@ -1,6 +1,6 @@
 import express from "express";
 import controllerAuth from "../controllers/auth.controller.js";
-import ControllerRoom from "../controllers/room.controller.js";
+import controllerRoom from "../controllers/room.controller.js";
 
 const router = express.Router();
 
@@ -9,6 +9,6 @@ router.route("/login").post(controllerAuth.login);
 router.route("/signup").post(controllerAuth.signup);
 
 // rooms
-router.route("/rooms").get(ControllerRoom.getRooms);
+router.route("/get-day").get(controllerRoom.getTodaysRooms);
 
 export default router;

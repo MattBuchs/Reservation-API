@@ -10,6 +10,7 @@ import SessionDatamapper from "./session.datamapper.js";
 import PriceDatamapper from "./price.datamapper.js";
 import RoomSessionDatamapper from "./roomSession.datamapper.js";
 import PriceRoomDatamapper from "./priceRoom.datamapper.js";
+import HourlyRoomDatamapper from "./hourlyRoom.datamapper.js";
 
 // Instanciation while passing client to the constructor
 export const userDatamapper = new UserDatamapper(client);
@@ -21,3 +22,4 @@ export const sessionDatamapper = new SessionDatamapper(client);
 export const priceDatamapper = new PriceDatamapper(client);
 export const roomSessionDatamapper = new RoomSessionDatamapper(client);
 export const priceRoomDatamapper = new PriceRoomDatamapper(client);
+export const hourlyRoomDatamapper = new HourlyRoomDatamapper(client);

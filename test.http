@@ -20,4 +20,9 @@ Content-Type: application/json
 }
 
 ### get rooms
-GET http://localhost:1234/rooms
+GET http://localhost:1234/get-day
+Content-Type: application/json
+
+{
+    "date": "2024-03-27"
+}

@@ -26,7 +26,7 @@ INSERT INTO price(price, capacity) VALUES
 (24, 4),
 (24, 3);
 
-INSERT INTO hourly(available_time) VALUES
+INSERT INTO hourly(hour) VALUES
 ('14:00'),
 ('16:00'),
 ('18:00'),
@@ -100,7 +100,7 @@ BEGIN
     LOOP
       -- Insertion des enregistrements pour chaque heure de la journée
       INSERT INTO "session" ("day", "hourly_id")
-      SELECT start_date + CAST("hourly"."available_time" AS time) AS "day_hour",
+      SELECT DATE(start_date + CAST("hourly"."hour" AS time)) AS "day_hour",
              room_rec."hourly_id"
       FROM "hourly"
       WHERE "hourly"."id" = room_rec."hourly_id";
@@ -111,5 +111,11 @@ BEGIN
     start_date := start_date + INTERVAL '1 day';
   END LOOP;
 END$$;
+
+-- Remplissage de la table room_has_session
+INSERT INTO room_has_session(room_id, session_id)
+SELECT DISTINCT hrs.room_id, s.id
+FROM session s
+JOIN hourly_has_room hrs ON s.hourly_id = hrs.hourly_id;
 
 COMMIT;
