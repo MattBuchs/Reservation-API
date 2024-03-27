@@ -6,6 +6,7 @@ export default {
             const rooms =
                 await datamappers.roomDatamapper.getRoomsWithDetails();
 
+            console.log(rooms);
             if (!rooms)
                 throw new Error("Rooms not found", {
                     cause: { code: 404 },

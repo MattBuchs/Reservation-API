@@ -85,4 +85,31 @@ INSERT INTO price_has_room(price_id, room_id) VALUES
 (16, 5),
 (17, 5);
 
+-- Déclaration de la variable pour la date de début (aujourd'hui)
+DO $$
+DECLARE
+  start_date timestamptz := CURRENT_DATE;
+  end_date timestamptz := CURRENT_DATE + INTERVAL '4 months';
+  room_rec RECORD;
+BEGIN
+  -- Boucle pour insérer des enregistrements pour chaque jour
+  WHILE start_date <= end_date LOOP
+    -- Boucle pour traiter chaque salle
+    FOR room_rec IN
+      SELECT "room_id", "hourly_id" FROM "hourly_has_room"
+    LOOP
+      -- Insertion des enregistrements pour chaque heure de la journée
+      INSERT INTO "session" ("day", "hourly_id")
+      SELECT start_date + CAST("hourly"."available_time" AS time) AS "day_hour",
+             room_rec."hourly_id"
+      FROM "hourly"
+      WHERE "hourly"."id" = room_rec."hourly_id";
+
+    END LOOP;
+
+    -- Passage au jour suivant
+    start_date := start_date + INTERVAL '1 day';
+  END LOOP;
+END$$;
+
 COMMIT;

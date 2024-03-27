@@ -11,5 +11,6 @@ SELECT * FROM "reservation" WHERE false;
 SELECT * FROM "room_has_user" WHERE false;
 SELECT * FROM "room_has_session" WHERE false;
 SELECT * FROM "price_has_room" WHERE false;
+SELECT * FROM "hourly_has_room" WHERE false;
 
 ROLLBACK;

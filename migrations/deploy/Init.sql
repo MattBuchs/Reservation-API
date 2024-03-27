@@ -79,6 +79,13 @@ CREATE TABLE "room_has_session" (
     "updated_at" timestamptz
 );
 
+CREATE TABLE "hourly_has_room" (
+    "hourly_id" int NOT NULL REFERENCES "hourly"("id"),
+    "room_id" int NOT NULL REFERENCES "room"("id"),
+    "created_at" timestamptz NOT NULL DEFAULT now(),
+    "updated_at" timestamptz
+);
+
 CREATE TABLE "price_has_room" (
     "price_id" int NOT NULL REFERENCES "price"("id"),
     "room_id" int NOT NULL REFERENCES "room"("id"),
