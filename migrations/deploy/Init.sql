@@ -42,6 +42,7 @@ CREATE TABLE "session" (
     "day" timestamptz NOT NULL,
     "is_blocked" boolean NOT NULL DEFAULT false,
     "hourly_id" int NOT NULL REFERENCES "hourly"("id"),
+    "room_id" int NOT NULL REFERENCES "room"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz
 );
@@ -57,6 +58,8 @@ CREATE TABLE "reservation" (
     "date" timestamptz NOT NULL,
     "hour" text NOT NULL,
     "number_person" int NOT NULL,
+    "is_child" boolean NOT NULL DEFAULT false,
+    "number_children" int,
     "discovered" text,
     "room_id" int NOT NULL REFERENCES "room"("id"),
     "session_id" int NOT NULL REFERENCES "session"("id"),
@@ -68,13 +71,6 @@ CREATE TABLE "reservation" (
 CREATE TABLE "room_has_user" (
     "room_id" int NOT NULL REFERENCES "room"("id"),
     "user_id" int NOT NULL REFERENCES "user"("id"),
-    "created_at" timestamptz NOT NULL DEFAULT now(),
-    "updated_at" timestamptz
-);
-
-CREATE TABLE "room_has_session" (
-    "room_id" int NOT NULL REFERENCES "room"("id"),
-    "session_id" int NOT NULL REFERENCES "session"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
     "updated_at" timestamptz
 );

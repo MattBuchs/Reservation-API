@@ -8,7 +8,6 @@ import HourlyDatamapper from "./hourly.datamapper.js";
 import RoomUserDatamapper from "./roomUser.datamapper.js";
 import SessionDatamapper from "./session.datamapper.js";
 import PriceDatamapper from "./price.datamapper.js";
-import RoomSessionDatamapper from "./roomSession.datamapper.js";
 import PriceRoomDatamapper from "./priceRoom.datamapper.js";
 import HourlyRoomDatamapper from "./hourlyRoom.datamapper.js";
 
@@ -20,6 +19,5 @@ export const hourlyDatamapper = new HourlyDatamapper(client);
 export const roomUserDatamapper = new RoomUserDatamapper(client);
 export const sessionDatamapper = new SessionDatamapper(client);
 export const priceDatamapper = new PriceDatamapper(client);
-export const roomSessionDatamapper = new RoomSessionDatamapper(client);
 export const priceRoomDatamapper = new PriceRoomDatamapper(client);
 export const hourlyRoomDatamapper = new HourlyRoomDatamapper(client);

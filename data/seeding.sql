@@ -96,14 +96,20 @@ BEGIN
   WHILE start_date <= end_date LOOP
     -- Boucle pour traiter chaque salle
     FOR room_rec IN
-      SELECT "room_id", "hourly_id" FROM "hourly_has_room"
+      SELECT "id" FROM "room" -- Sélectionner chaque "room_id" dans la table "room"
     LOOP
-      -- Insertion des enregistrements pour chaque heure de la journée
-      INSERT INTO "session" ("day", "hourly_id")
-      SELECT DATE(start_date + CAST("hourly"."hour" AS time)) AS "day_hour",
-             room_rec."hourly_id"
-      FROM "hourly"
-      WHERE "hourly"."id" = room_rec."hourly_id";
+      -- Insertion des enregistrements pour chaque heure de la journée pour cette salle
+      INSERT INTO "session" ("day", "hourly_id", "room_id")
+      SELECT 
+          DATE(start_date + CAST("hourly"."hour" AS time)) AS "day_hour",
+          "hourly"."id" AS "hourly_id",
+          room_rec."id" AS "room_id" -- Utiliser l'ID de la salle actuelle
+      FROM 
+          "hourly_has_room"
+      JOIN
+          "hourly" ON "hourly_has_room"."hourly_id" = "hourly"."id"
+      WHERE
+          "hourly_has_room"."room_id" = room_rec."id"; -- Limiter aux heures disponibles pour cette salle
 
     END LOOP;
 
@@ -111,11 +117,5 @@ BEGIN
     start_date := start_date + INTERVAL '1 day';
   END LOOP;
 END$$;
-
--- Remplissage de la table room_has_session
-INSERT INTO room_has_session(room_id, session_id)
-SELECT DISTINCT hrs.room_id, s.id
-FROM session s
-JOIN hourly_has_room hrs ON s.hourly_id = hrs.hourly_id;
 
 COMMIT;
