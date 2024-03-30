@@ -18,6 +18,14 @@ export default {
                     cause: { code: 404 },
                 });
 
+            const farthestDay =
+                await datamappers.roomDatamapper.getFarthestDay();
+
+            if (!farthestDay)
+                throw new Error("farthest day not found", {
+                    cause: { code: 400 },
+                });
+
             const groupedData = {};
 
             dayRooms.forEach((session) => {
@@ -41,7 +49,7 @@ export default {
             // Conversion de l'objet en tableau
             const result = Object.values(groupedData);
 
-            return res.status(200).json({ dayRooms: result });
+            return res.status(200).json({ dayRooms: result, farthestDay });
         } catch (err) {
             console.log(err);
             if (err.cause) {
