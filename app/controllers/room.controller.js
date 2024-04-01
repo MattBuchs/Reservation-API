@@ -61,4 +61,28 @@ export default {
                 .json({ error: `Internal Server Error: ${err.message}` });
         }
     },
+
+    async getRoomPrices(req, res) {
+        const { room_id } = req.query;
+        try {
+            const roomInfos =
+                await datamappers.roomDatamapper.getPriceWithRoomId(room_id);
+
+            if (!roomInfos)
+                throw new Error("Room infos not found", {
+                    cause: { code: 404 },
+                });
+
+            return res.status(200).json({ roomInfos });
+        } catch (err) {
+            console.log(err);
+            if (err.cause) {
+                const { code } = err.cause;
+                return res.status(code).json({ error: err.message });
+            }
+            return res
+                .status(500)
+                .json({ error: `Internal Server Error: ${err.message}` });
+        }
+    },
 };

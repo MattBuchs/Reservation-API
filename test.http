@@ -21,3 +21,6 @@ Content-Type: application/json
 
 ### get rooms
 GET http://localhost:1234/get-day?date=2024-03-30
+
+### get prices
+GET http://localhost:1234/get-prices?room_id=6

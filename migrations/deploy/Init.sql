@@ -49,8 +49,7 @@ CREATE TABLE "session" (
 
 CREATE TABLE "reservation" (
     "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "firstname" text NOT NULL,
-    "lastname" text NOT NULL,
+    "name" text NOT NULL,
     "email" text NOT NULL CHECK (
         "email" ~ '^(?:[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&''*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$'
     ),
@@ -58,9 +57,13 @@ CREATE TABLE "reservation" (
     "date" timestamptz NOT NULL,
     "hour" text NOT NULL,
     "number_person" int NOT NULL,
-    "is_child" boolean NOT NULL DEFAULT false,
     "number_children" int,
+    "participated_escape" text NOT NULL,
     "discovered" text,
+    "message" text,
+    "gift_check_number" text,
+    "is_reminder_sms" boolean NOT NULL,
+    "user_id" int REFERENCES "user"("id"),
     "room_id" int NOT NULL REFERENCES "room"("id"),
     "session_id" int NOT NULL REFERENCES "session"("id"),
     "created_at" timestamptz NOT NULL DEFAULT now(),
