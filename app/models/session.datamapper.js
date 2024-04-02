@@ -4,8 +4,9 @@ export default class SessionDatamapper extends CoreDatamapper {
     tableName = "session";
 
     async addNewDay() {
-        const result = await this.client.query(
-            `
+        try {
+            await this.client.query(
+                `
             DO $$
             DECLARE
             last_day timestamptz;
@@ -37,19 +38,26 @@ export default class SessionDatamapper extends CoreDatamapper {
             END LOOP;
             END$$;
             `
-        );
+            );
 
-        return !!result.rowCount;
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 
     async deletePastDay() {
-        const result = await this.client.query(
-            `
+        try {
+            await this.client.query(
+                `
             DELETE FROM session
             WHERE DATE_TRUNC('day', day) < CURRENT_DATE - INTERVAL '1 day';
             `
-        );
+            );
 
-        return !!result.rowCount;
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 }
