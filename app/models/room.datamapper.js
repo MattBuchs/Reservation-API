@@ -7,7 +7,7 @@ export default class RoomDatamapper extends CoreDatamapper {
         const result = await this.client.query(
             `
             SELECT "room"."id" AS room_id, "room"."name", "room"."icon",
-            TO_CHAR("session"."day", 'YYYY-MM-DD') AS day, "session"."is_blocked",
+            TO_CHAR("session"."day", 'YYYY-MM-DD') AS day, "session"."is_blocked", "session"."is_closed",
             "hourly"."hour"
             FROM "room"
             LEFT JOIN "session" ON "session"."room_id" = "room"."id"
@@ -15,7 +15,7 @@ export default class RoomDatamapper extends CoreDatamapper {
             WHERE "session"."day" = $1
             GROUP BY 
                 "room"."id", "room"."name", 
-                "session"."day", "session"."is_blocked", 
+                "session"."day", "session"."is_blocked", "session"."is_closed",
                 "hourly"."hour"
             ORDER BY "room"."name", "hourly"."hour";
             `,
@@ -67,5 +67,65 @@ export default class RoomDatamapper extends CoreDatamapper {
         );
 
         return result.rows[0].farthest_day;
+    }
+
+    async getRoomsForWeek(date, roomId) {
+        const result = await this.client.query(
+            `
+            SELECT 
+                "room"."id" AS room_id, 
+                "room"."name", 
+                "room"."icon",
+                TO_CHAR("session"."day", 'YYYY-MM-DD') AS day, 
+                "session"."is_blocked", 
+                "session"."is_closed",
+                "hourly"."hour"
+            FROM 
+                "room"
+            LEFT JOIN 
+                "session" ON "session"."room_id" = "room"."id"
+            LEFT JOIN 
+                "hourly" ON "session"."hourly_id" = "hourly"."id"
+            WHERE 
+                "session"."day" BETWEEN 
+                    CASE 
+                        WHEN 
+                            (SELECT 
+                                COUNT(DISTINCT "day") 
+                            FROM 
+                                "session" 
+                            WHERE 
+                                "room_id" = $2 
+                                AND 
+                                "day" BETWEEN ($1::DATE + INTERVAL '1 day') AND ($1::DATE + INTERVAL '7 days')) < 6 
+                        THEN 
+                            (SELECT 
+                                MAX("day") - INTERVAL '6 days' 
+                            FROM 
+                                "session" 
+                            WHERE 
+                                "room_id" = $2)
+                        ELSE 
+                            $1::DATE 
+                    END
+                AND 
+                    $1::DATE + INTERVAL '6 days'
+                AND 
+                    "room"."id" = $2
+            GROUP BY 
+                "room"."id", 
+                "room"."name", 
+                "session"."day", 
+                "session"."is_blocked", 
+                "session"."is_closed",
+                "hourly"."hour"
+            ORDER BY 
+                "session"."day",
+                "hourly"."hour";
+            `,
+            [date, roomId]
+        );
+
+        return result.rows;
     }
 }

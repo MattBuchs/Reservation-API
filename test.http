@@ -19,8 +19,11 @@ Content-Type: application/json
     "confirmPassword": "1234"
 }
 
-### get rooms
-GET http://localhost:1234/get-day?date=2024-03-30
+### get day rooms
+GET http://localhost:1234/get-day?date=2024-03-14
+
+### get week rooms
+GET http://localhost:1234/get-week?date=2024-04-18&room_id=1
 
 ### get prices
-GET http://localhost:1234/get-prices?room_id=6
+GET http://localhost:1234/get-prices?room_id=1

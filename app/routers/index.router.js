@@ -10,6 +10,7 @@ router.route("/signup").post(controllerAuth.signup);
 
 // rooms
 router.route("/get-day").get(controllerRoom.getTodaysRooms);
+router.route("/get-week").get(controllerRoom.getWeekRooms);
 router.route("/get-prices").get(controllerRoom.getRoomPrices);
 
 export default router;

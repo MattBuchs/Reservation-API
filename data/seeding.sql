@@ -89,7 +89,7 @@ INSERT INTO price_has_room(price_id, room_id) VALUES
 DO $$
 DECLARE
   start_date timestamptz := CURRENT_DATE;
-  end_date timestamptz := CURRENT_DATE + INTERVAL '4 months';
+  end_date timestamptz := CURRENT_DATE + INTERVAL '3 months';
   room_rec RECORD;
 BEGIN
   -- Boucle pour insérer des enregistrements pour chaque jour
@@ -99,11 +99,12 @@ BEGIN
       SELECT "id" FROM "room" -- Sélectionner chaque "room_id" dans la table "room"
     LOOP
       -- Insertion des enregistrements pour chaque heure de la journée pour cette salle
-      INSERT INTO "session" ("day", "hourly_id", "room_id")
+      INSERT INTO "session" ("day", "hourly_id", "room_id", "is_closed")
       SELECT 
           DATE(start_date + CAST("hourly"."hour" AS time)) AS "day_hour",
           "hourly"."id" AS "hourly_id",
-          room_rec."id" AS "room_id" -- Utiliser l'ID de la salle actuelle
+          room_rec."id" AS "room_id", -- Utiliser l'ID de la salle actuelle
+          CASE WHEN EXTRACT(DOW FROM start_date) IN (1, 2) THEN true ELSE false END AS "is_closed" -- Si c'est Lundi ou Mardi, mettre is_closed à true, sinon à false
       FROM 
           "hourly_has_room"
       JOIN
